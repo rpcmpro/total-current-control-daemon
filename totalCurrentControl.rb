@@ -6,6 +6,7 @@ class TotalCurrentControl
   @@logfile = 'totalCurrentControl.log'
   @@verbose = false
   @@daemonize = false
+  @@testMode = false
   @@workingDirectory = Dir.pwd
   @@loggingToFile = true
   @@version = "0.1.0"
@@ -24,6 +25,10 @@ class TotalCurrentControl
 
       opts.on("-l", "--[no-]log", "Save log to file") do |v|
         @@loggingToFile = v
+      end
+
+      opts.on("-t", "--test-mode", "Test mode - don't really turn on/turn off ports - just log intentions") do |v|
+        @@testMode = v
       end
 
       opts.on("-v", "--verbose", "Run verbosely") do |v|
@@ -57,6 +62,10 @@ class TotalCurrentControl
     @@daemonize
   end
 
+  def self.testMode
+    @@testMode
+  end
+  
   def self.verbose
     @@verbose
   end
@@ -376,7 +385,9 @@ class TotalCurrentControl
           comment = candidateHash['comment']
 
           log text: "Will TURN OFF #{groupName} #{outletNumber}@#{apiAddress} (#{comment})"
-          RPCMAPIControl.switch apiAddress: apiAddress, outlet: outletNumber, state: 'off'
+          if @@testMode == false
+            RPCMAPIControl.switch apiAddress: apiAddress, outlet: outletNumber, state: 'off'
+          end
         end
         resetOverTotalLimitStabilized groupName: groupName
         changesApplied = true
@@ -390,7 +401,9 @@ class TotalCurrentControl
           comment = candidateHash['comment']
 
           log text: "Will TURN ON #{groupName} #{outletNumber}@#{apiAddress} (#{comment})"
-          RPCMAPIControl.switch apiAddress: apiAddress, outlet: outletNumber, state: 'on'
+          if @@testMode == false
+            RPCMAPIControl.switch apiAddress: apiAddress, outlet: outletNumber, state: 'on'
+          end
         end
         resetEnoughAvailableAmpsStabilized groupName: groupName
         changesApplied = true
@@ -453,6 +466,9 @@ TotalCurrentControl.log text: "#{Time.now}"
 TotalCurrentControl.log text: 'RPCMs:'
 TotalCurrentControl.log text: TotalCurrentControl.listOfDevices
 TotalCurrentControl.log text: TotalCurrentControl.listOfSurvivalPriorities
+if TotalCurrentControl.testMode == true
+  TotalCurrentControl.log text: 'Running in test mode...'
+end
 
 if TotalCurrentControl.daemonize
   Process.daemon
