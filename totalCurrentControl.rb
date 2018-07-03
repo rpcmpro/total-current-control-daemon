@@ -65,7 +65,7 @@ class TotalCurrentControl
   def self.testMode
     @@testMode
   end
-  
+
   def self.verbose
     @@verbose
   end
@@ -130,7 +130,7 @@ class TotalCurrentControl
               defaultState = outletHash['defaultState'] rescue nil
               comment = outletHash['comment'] rescue nil
               next if survivalPriority == nil
-              if survivalPriority.class == Integer
+              if survivalPriority.class == Integer or survivalPriority.class == Fixnum
                 if not @@groups[groupName]['survivalPriorities'].has_key? survivalPriority
                   @@groups[groupName]['survivalPriorities'][survivalPriority] = {}
                 end
@@ -142,7 +142,7 @@ class TotalCurrentControl
                 survivalPriorityInGroup[survivalPriorityKey]['comment'] = comment
                 survivalPriorityInGroup[survivalPriorityKey]['defaultState'] = defaultState
               else
-                log text: "survivalPriority has to be Integer - now #{survivalPriority}"
+                log text: "survivalPriority has to be Integer or Fixnum - now #{survivalPriority} (#{survivalPriority.class})"
                 exit 1
               end
             end
