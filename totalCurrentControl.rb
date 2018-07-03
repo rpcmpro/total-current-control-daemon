@@ -384,7 +384,7 @@ class TotalCurrentControl
           outletNumber = candidateHash['outletNumber']
           comment = candidateHash['comment']
 
-          log text: "Will TURN OFF #{groupName} #{outletNumber}@#{apiAddress} (#{comment})"
+          log text: "#{Time.now} Will TURN OFF #{groupName} #{outletNumber}@#{apiAddress} (#{comment})"
           if @@testMode == false
             RPCMAPIControl.switch apiAddress: apiAddress, outlet: outletNumber, state: 'off'
           end
