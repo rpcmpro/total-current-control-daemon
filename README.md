@@ -87,6 +87,7 @@ Total Current Control Daemon for RPCM ME (http://rpcm.pro)
 Usage: totalCurrentControl.rb [options]
     -d, --daemonize                  Daemonize and return control
     -l, --[no-]log                   Save log to file
+    -t, --test-mode                  Test mode - don't really turn on/turn off ports - just log intentions
     -v, --verbose                    Run verbosely
     -w, --working-directory PATH     Specify working directory (default current directory)
 ```
