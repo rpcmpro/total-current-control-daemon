@@ -194,7 +194,7 @@ class TotalCurrentControl
         first = true
         group['survivalPriorities'][priority].each do |key, hash|
           result += ', ' if first != true
-          result += "#{key} (#{hash['api_address']})"
+          result += "#{key} (#{hash['api_address']} - #{hash['comment']})"
           first = false
         end
         result += "]\n"
@@ -225,6 +225,10 @@ class TotalCurrentControl
   end
 
   def self.updateTotalsForGroups
+    if @@groups == nil
+      return
+    end
+
     @@groups.each_key do |groupName|
       groupCurrentTotalMilliAmps = 0
       @@configHash[groupName]['RPCMs'].each_value do |rpcm|
@@ -427,7 +431,7 @@ class RPCMAPIControl
     http = EventMachine::HttpRequest.new("http://#{apiAddress}:8888/api/cachedStatusWithFullNames").get
 
     http.errback do
-      log text: "#{Time.now} Error requesting #{apiAddress}"
+      TotalCurrentControl.log text: "#{Time.now} Error requesting #{apiAddress}"
 
       GC.start full_mark: true, immediate_sweep: true
     end
